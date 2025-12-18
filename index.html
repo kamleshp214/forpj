@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Priyanshi MERN Mastery 2026</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --bg: #0a0000;
+      --bg-grad: linear-gradient(to bottom right, #1a0505, #0f0a0a);
+      --text: #e5e7eb;
+      --accent: #dc2626;
+      --accent-dark: #991b1b;
+      --card: rgba(30, 5, 5, 0.7);
+      --border: rgba(220, 38, 38, 0.3);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      background-image: var(--bg-grad);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(12px);
+      background: rgba(0,0,0,0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      z-index: 50;
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(to br, var(--accent), var(--accent-dark));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    h1 { font-size: 1.8rem; font-weight: 900; }
+    h1 span { color: var(--accent); }
+    .live-badge {
+      background: rgba(34,197,94,0.2);
+      color: #22c55e;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .pulse { width: 12px; height: 12px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: rgba(220,38,38,0.1);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      margin-bottom: 3rem;
+    }
+    .hero h2 { font-size: 3rem; margin-bottom: 1rem; }
+    .hero p { font-size: 1.3rem; color: #9ca3af; max-width: 800px; margin: 0 auto 2rem; }
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .feature { text-align: center; }
+    .feature i { font-size: 3rem; margin-bottom: 1rem; }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+    .tab {
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s;
+    }
+    .tab.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 10px 30px rgba(220,38,38,0.4);
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 3rem;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 1.5rem 1.5rem 1.5rem 4rem;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      font-size: 1.1rem;
+      color: white;
+    }
+    .search-box i { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: #6b7280; }
+
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.6s; }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+
+    .category { margin-bottom: 4rem; }
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .category-header i { font-size: 2.5rem; color: var(--accent); }
+    .category-header h3 { font-size: 2.2rem; }
+    .level { color: var(--accent); font-weight: bold; }
+
+    .question-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .question-card:hover { border-color: var(--accent); }
+    .question-header {
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .question-header h4 { font-size: 1.5rem; font-weight: bold; }
+    .chevron { font-size: 2rem; color: var(--accent); transition: transform 0.3s; }
+    .expanded .chevron { transform: rotate(90deg); }
+
+    .answer {
+      padding: 0 2rem 2rem;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+    .expanded .answer { display: block; }
+    .answer-content { margin-top: 2rem; font-size: 1.1rem; }
+    .why, .example-box, .tip {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-radius: 16px;
+    }
+    .why { background: rgba(250,204,21,0.1); border-left: 5px solid #facc15; }
+    .example-box { background: #00000099; font-family: monospace; overflow-x: auto; white-space: pre; }
+    .tip { background: rgba(250,204,21,0.2); border: 1px solid #facc15; }
+
+    .project-card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      border: 1px solid var(--border);
+    }
+    .project-card h3 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .tech { font-size: 1.5rem; color: var(--accent); margin-bottom: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 2rem; margin: 3rem 0; }
+    .pitch {
+      background: rgba(34,197,94,0.2);
+      border: 1px solid rgba(34,197,94,0.5);
+      padding: 2rem;
+      border-radius: 24px;
+      font-style: italic;
+      font-size: 1.3rem;
+    }
+
+    .snippet-card {
+      background: #00000080;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .snippet-header {
+      background: rgba(220,38,38,0.3);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .copy-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    pre { padding: 2rem; background: #000; overflow-x: auto; }
+    code { color: #86efac; font-size: 1.1rem; }
+
+    @media (max-width: 768px) {
+      main { padding: 1rem; }
+      .hero h2 { font-size: 2.2rem; }
+      .tab { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
+      .features { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">
+          <i data-lucide="terminal"></i>
+        </div>
+        <div>
+          <h1>Priyanshi <span>MERN Mastery 2026</span></h1>
+          <p style="font-size:0.9rem; color:#9ca3af;">Your Complete Interview Preparation Suite</p>
+        </div>
+      </div>
+      <div class="live-badge">
+        <div class="pulse"></div>
+        LIVE PREP MODE
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <h2>Welcome to Your Complete MERN Mastery Suite</h2>
+      <p>This is your ONE-STOP resource for cracking MERN Stack interviews in 2026. Every question, answer, project breakdown, code snippet, and strategy you need — all here, beautifully organized.</p>
+      <div class="features">
+        <div class="feature">
+          <i data-lucide="target" style="color:#dc2626;"></i>
+          <p>Structured Learning</p>
+        </div>
+        <div class="feature">
+          <i data-lucide="lightbulb" style="color:#facc15;"></i>
+          <p>Why It Matters</p>
+        </div>
+        <div class="feature">
+          <i data-lucide="timer" style="color:#3b82f6;"></i>
+          <p>Quick Revision</p>
+        </div>
+      </div>
+    </div>
+
+    <nav>
+      <div class="tab active" data-tab="roadmap"><i data-lucide="book-open"></i> Complete Roadmap</div>
+      <div class="tab" data-tab="projects"><i data-lucide="briefcase"></i> Project Mastery</div>
+      <div class="tab" data-tab="coding"><i data-lucide="code-2"></i> Code Patterns</div>
+      <div class="tab" data-tab="strategy"><i data-lucide="target"></i> Interview Strategy</div>
+    </nav>
+
+    <div class="search-box">
+      <i data-lucide="search"></i>
+      <input type="text" id="searchInput" placeholder="Search anything... (closure, aggregation, JWT, hooks, etc.)" />
+    </div>
+
+    <!-- ==================== ROADMAP SECTION ==================== -->
+    <section id="roadmap" class="section active">
+
+      <!-- JavaScript Fundamentals -->
+      <div class="category">
+        <div class="category-header">
+          <i data-lucide="code-2"></i>
+          <div>
+            <h3>JavaScript Fundamentals (The Foundation)</h3>
+            <p class="level">Must Master First</p>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Explain Hoisting in JavaScript.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Hoisting is JavaScript's default behavior of moving declarations (var, function) to the top of their scope before code execution. let/const are also hoisted but not initialized (Temporal Dead Zone).</p>
+              <div class="why">
+                <p><strong>Why Interviewers Ask:</strong> Shows understanding of execution context and variable environment.</p>
+              </div>
+              <div class="example-box"><pre><code>console.log(x); // undefined (not error for var)
+var x = 5;
+
+// vs
+console.log(y); // ReferenceError
+let y = 10;</code></pre></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>What is Closure? Real-world use case.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> A closure is a function that remembers its outer variables even after the outer function has returned. Used in data privacy, module pattern, currying.</p>
+              <div class="why">
+                <p><strong>Why Asked:</strong> Core concept for React hooks, event handlers, and Node.js callbacks.</p>
+              </div>
+              <div class="example-box"><pre><code>function makeCounter() {
+  let count = 0;
+  return function() {
+    return ++count;
+  };
+}
+const counter = makeCounter();
+console.log(counter()); // 1
+console.log(counter()); // 2</code></pre></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Event Loop in detail with examples.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Call Stack → Microtask Queue (Promises) → Macrotask Queue (setTimeout, I/O). Microtasks execute before next macrotask.</p>
+              <div class="why">
+                <p><strong>Why Asked:</strong> Critical for understanding async behavior in Node.js and React.</p>
+              </div>
+              <div class="example-box"><pre><code>console.log('1');
+setTimeout(() => console.log('2'), 0);
+Promise.resolve().then(() => console.log('3'));
+console.log('4');
+// Output: 1 4 3 2</code></pre></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>this keyword - 4 binding rules.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> 1. Default (global/window), 2. Implicit (object calling), 3. Explicit (call/apply/bind), 4. New (constructor). Arrow functions lexically bind this.</p>
+              <div class="why">
+                <p><strong>Why Asked:</strong> Essential for React class components and event handlers.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Prototype Chain and Inheritance.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Every object has __proto__ linking to its constructor's prototype. Used for method sharing before ES6 classes.</p>
+              <div class="why">
+                <p><strong>Why Asked:</strong> Understanding under-the-hood of classes and React component inheritance.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Async/Await vs Promises vs Callbacks.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Callbacks → Promise → async/await (syntactic sugar). async/await makes error handling easier with try/catch.</p>
+              <div class="why">
+                <p><strong>Why Asked:</strong> You'll write async code daily in Node.js APIs.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MongoDB Mastery -->
+      <div class="category">
+        <div class="category-header">
+          <i data-lucide="database"></i>
+          <div>
+            <h3>MongoDB Mastery (NoSQL Database)</h3>
+            <p class="level">Intermediate to Advanced</p>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Embedding vs Referencing - When to use which?</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Embedding: For contained data (one-to-few), faster reads, atomic updates. Referencing: For large/many-to-many, avoids duplication, flexible.</p>
+              <div class="why">
+                <p><strong>Why Asked:</strong> Core data modeling decision in MERN apps.</p>
+              </div>
+              <div class="tip">
+                <p><strong>Pro Tip:</strong> Embed comments in blog post (few), reference products in orders (many).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Explain Aggregation Pipeline stages with example.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> $match (filter), $group (aggregate), $project (reshape), $sort, $limit, $lookup (join), $unwind (de-array).</p>
+              <div class="example-box"><pre><code>// Top 5 highest paying job categories
+db.jobs.aggregate([
+  { $match: { salary: { $gt: 50000 } } },
+  { $group: { _id: "$category", avgSalary: { $avg: "$salary" } } },
+  { $sort: { avgSalary: -1 } },
+  { $limit: 5 }
+])</code></pre></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Indexes: Types, Compound, Partial, TTL.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Single field, compound (order matters), text (search), geospatial, TTL (auto-expire).</p>
+              <div class="tip">
+                <p><strong>Pro Tip:</strong> Always use explain('executionStats') to verify index usage.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Transactions in MongoDB - When possible?</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Since 4.0, multi-document ACID transactions in replica sets. Use for critical operations like bank transfers.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Schema Validation in MongoDB.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Define JSON schema in collection creation for required fields, types, enums, custom validators.</p>
+              <div class="why">
+                <p><strong>Why Asked:</strong> Prevents bad data before Mongoose validation.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Change Streams - Real-time updates.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Watch collection for changes (insert/update/delete). Used for real-time features like notifications.</p>
+              <div class="tip">
+                <p><strong>Example Use:</strong> In HireSphere, notify when new job matches user skills.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Express.js & Node.js -->
+      <div class="category">
+        <div class="category-header">
+          <i data-lucide="server"></i>
+          <div>
+            <h3>Express.js & Node.js (Backend Powerhouse)</h3>
+            <p class="level">Production Ready</p>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Middleware lifecycle and error handling.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Middleware chain → next() → next middleware. Error middleware (4 params) catches errors.</p>
+              <div class="example-box"><pre><code>app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Server error' });
+});</code></pre></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Authentication: JWT vs Sessions vs OAuth.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> JWT: Stateless, scalable. Sessions: Server-side (Redis). OAuth: Third-party login.</p>
+              <div class="tip">
+                <p><strong>Best Practice:</strong> JWT + HttpOnly cookie + refresh tokens.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Rate Limiting strategies.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> express-rate-limit, Redis token bucket. Prevent brute force/DDoS.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Streams for large files - Why and How?</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Prevents memory overflow. Use fs.createReadStream() for uploads/downloads.</p>
+              <div class="tip">
+                <p><strong>Use Case:</strong> Resume Builder PDF streaming.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Clustering and PM2.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Cluster forks workers. PM2 manages clusters, zero-downtime reloads.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Security Best Practices (Top 10).</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Helmet, CORS, input validation (Joi), rate limiting, HTTPS, no-eval, dependency scanning, env variables.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- React.js Mastery -->
+      <div class="category">
+        <div class="category-header">
+          <i data-lucide="globe"></i>
+          <div>
+            <h3>React.js Mastery (Modern Frontend)</h3>
+            <p class="level">Hooks + Performance + Architecture</p>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>React 18+ New Features: Concurrent Rendering, Transitions.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> useTransition for non-urgent updates, automatic batching, Suspense for data fetching.</p>
+              <div class="example-box"><pre><code>const [isPending, startTransition] = useTransition();
+startTransition(() => setTab(newTab)); // Low priority</code></pre></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Custom Hooks - Best practices and examples.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Start with 'use', encapsulate logic, accept dependencies.</p>
+              <div class="tip">
+                <p><strong>Examples:</strong> useDebounce, useFetch, useLocalStorage, useForm.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Performance Optimization Techniques.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> React.memo, useMemo, useCallback, lazy/Suspense, virtualization, avoid inline props.</p>
+              <div class="tip">
+                <p><strong>Pro Tip:</strong> Profile with React DevTools first.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>State Management: Context vs Redux vs Zustand vs Recoil.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Context: Simple. Redux: Complex. Zustand: Lightweight. Recoil: Atomic.</p>
+              <div class="tip">
+                <p><strong>2026 Trend:</strong> Zustand is gaining massive popularity.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card" onclick="toggleAnswer(this)">
+          <div class="question-header">
+            <h4>Server Components (Next.js) vs Client Components.</h4>
+            <i data-lucide="chevron-right" class="chevron"></i>
+          </div>
+          <div class="answer">
+            <div class="answer-content">
+              <p><strong>Answer:</strong> Server: Render on server, no interactivity. Client: 'use client', hooks, interactivity.</p>
+              <div class="why">
+                <p><strong>Why Asked:</strong> Next.js is dominating the MERN space in 2026.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROJECTS SECTION ==================== -->
+    <section id="projects" class="section">
+      <h2 style="text-align:center; font-size:3rem; margin-bottom:3rem;">Deep Dive: Your Projects Explained Perfectly</h2>
+
+      <div class="project-card">
+        <h3>HireSphere - Advanced Job Portal</h3>
+        <p class="tech">MERN + Redux Toolkit + JWT + Multer + Cloudinary + Socket.io</p>
+        <div class="grid">
+          <div>
+            <h4 style="font-size:1.8rem; margin-bottom:1rem;"><i data-lucide="zap" style="color:#facc15;"></i> Key Features</h4>
+            <ul style="font-size:1.2rem; list-style:none;">
+              <li>• Real-time job notifications via Socket.io</li>
+              <li>• Advanced search with MongoDB text indexes</li>
+              <li>• Resume parsing with ATS scoring</li>
+              <li>• Admin dashboard with analytics (Chart.js)</li>
+              <li>• Role-based access (Applicant/Recruiter/Admin)</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="font-size:1.8rem; margin-bottom:1rem;"><i data-lucide="alert-circle" style="color:#fb923c;"></i> Challenges & Solutions</h4>
+            <div style="font-size:1.1rem;">
+              <p><strong>Slow search with millions of jobs:</strong> Compound indexes + $facet pagination</p>
+              <p><strong>Large resume uploads crashing server:</strong> Multer-stream to Cloudinary with progress tracking</p>
+              <p><strong>Stale real-time feeds:</strong> MongoDB Change Streams + Socket.io broadcast</p>
+            </div>
+          </div>
+        </div>
+        <div class="pitch">
+          <strong>Perfect Interview Pitch:</strong> "Built a scalable job portal handling concurrent uploads and real-time features, optimizing MongoDB queries that reduced search time from 3s to under 300ms."
+        </div>
+      </div>
+
+      <div class="project-card">
+        <h3>Resume Builder Pro</h3>
+        <p class="tech">MERN + React-PDF + React-Quill + Zustand + Drag-n-Drop</p>
+        <div class="grid">
+          <div>
+            <h4 style="font-size:1.8rem; margin-bottom:1rem;"><i data-lucide="zap" style="color:#facc15;"></i> Key Features</h4>
+            <ul style="font-size:1.2rem; list-style:none;">
+              <li>• 20+ ATS-friendly templates</li>
+              <li>• Real-time preview with live editing</li>
+              <li>• Export PDF/JSON, import LinkedIn</li>
+              <li>• Collaborative editing</li>
+              <li>• AI suggestions (mock API)</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="font-size:1.8rem; margin-bottom:1rem;"><i data-lucide="alert-circle" style="color:#fb923c;"></i> Challenges & Solutions</h4>
+            <div style="font-size:1.1rem;">
+              <p><strong>Frequent re-renders:</strong> Debouncing, memoization, virtualization</p>
+              <p><strong>Slow PDF generation:</strong> @react-pdf/renderer with web workers</p>
+            </div>
+          </div>
+        </div>
+        <div class="pitch">
+          <strong>Perfect Interview Pitch:</strong> "Created a high-performance resume builder with real-time collaboration, focusing on ATS compatibility and seamless user experience."
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CODING SECTION ==================== -->
+    <section id="coding" class="section">
+      <h2 style="text-align:center; font-size:3rem; margin-bottom:3rem;">Must-Know Code Patterns & Snippets</h2>
+
+      <div class="snippet-card">
+        <div class="snippet-header">
+          <h3>Protected Route Middleware (Express)</h3>
+          <button class="copy-btn" onclick="copyCode(this, `const protect = async (req, res, next) => {
+  try {
+    const token = req.cookies.token || req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+    next();
+  } catch (err) {
+    res.status(401).json({ error: 'Token invalid' });
+  }
+};`)">Copy</button>
+        </div>
+        <pre><code>const protect = async (req, res, next) => {
+  try {
+    const token = req.cookies.token || req.header('Authorization')?.replace('Bearer ', '');
+    if (!token) return res.status(401).json({ error: 'Unauthorized' });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+    next();
+  } catch (err) {
+    res.status(401).json({ error: 'Token invalid' });
+  }
+};</code></pre>
+        <div style="padding:2rem; background:#00000099;">
+          <p style="color:#facc15; font-weight:bold;">Why this matters:</p>
+          <p>Checks both cookie and header, securely populates req.user for protected routes.</p>
+        </div>
+      </div>
+
+      <div class="snippet-card">
+        <div class="snippet-header">
+          <h3>Custom Hook: useForm with Validation</h3>
+          <button class="copy-btn" onclick="copyCode(this, `const useForm = (initialValues, validate) => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+  };
+
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouched({ ...touched, [name]: true });
+    const validationErrors = validate(values);
+    setErrors(validationErrors);
+  };
+
+  return { values, errors, touched, handleChange, handleBlur };
+};`)">Copy</button>
+        </div>
+        <pre><code>const useForm = (initialValues, validate) => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+  };
+
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouched({ ...touched, [name]: true });
+    const validationErrors = validate(values);
+    setErrors(validationErrors);
+  };
+
+  return { values, errors, touched, handleChange, handleBlur };
+};</code></pre>
+        <div style="padding:2rem; background:#00000099;">
+          <p style="color:#facc15; font-weight:bold;">Why this matters:</p>
+          <p>Reusable form logic with validation on blur — perfect for login/signup forms.</p>
+        </div>
+      </div>
+
+      <div class="snippet-card">
+        <div class="snippet-header">
+          <h3>MongoDB Transaction Example</h3>
+          <button class="copy-btn" onclick="copyCode(this, `const session = await mongoose.startSession();
+session.startTransaction();
+try {
+  await Order.create([order], { session });
+  await Product.updateOne(
+    { _id: productId },
+    { $inc: { stock: -quantity } },
+    { session }
+  );
+  await session.commitTransaction();
+} catch (error) {
+  await session.abortTransaction();
+  throw error;
+} finally {
+  session.endSession();
+}`)">Copy</button>
+        </div>
+        <pre><code>const session = await mongoose.startSession();
+session.startTransaction();
+try {
+  await Order.create([order], { session });
+  await Product.updateOne(
+    { _id: productId },
+    { $inc: { stock: -quantity } },
+    { session }
+  );
+  await session.commitTransaction();
+} catch (error) {
+  await session.abortTransaction();
+  throw error;
+} finally {
+  session.endSession();
+}</code></pre>
+        <div style="padding:2rem; background:#00000099;">
+          <p style="color:#facc15; font-weight:bold;">Why this matters:</p>
+          <p>Atomic inventory update with order creation — critical for e-commerce.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== STRATEGY SECTION ==================== -->
+    <section id="strategy" class="section">
+      <h2 style="text-align:center; font-size:3rem; margin-bottom:3rem;">Interview Strategy: From Nervous to Confident</h2>
+
+      <div class="project-card">
+        <h3 style="font-size:2rem; margin-bottom:2rem;">30-Second Elevator Pitch</h3>
+        <p style="font-size:1.3rem; line-height:1.8;">
+          "Hi, I'm Priyanshi, a final-year CSE student passionate about full-stack development. I've built production-grade MERN applications like HireSphere — a real-time job portal with advanced search and resume handling, where I optimized MongoDB queries reducing latency by 80%. During my internship at Job Sense, I worked in Agile teams building responsive components and APIs. I'm excited about scalable systems and clean code."
+        </p>
+      </div>
+
+      <div class="project-card">
+        <h3 style="font-size:2rem; margin-bottom:2rem;">STAR Method Framework</h3>
+        <ol style="font-size:1.3rem; padding-left:2rem; line-height:2;">
+          <li><strong>Situation:</strong> Set context (project/internship)</li>
+          <li><strong>Task:</strong> Your responsibility</li>
+          <li><strong>Action:</strong> Specific technical steps you took</li>
+          <li><strong>Result:</strong> Quantifiable impact + what you learned</li>
+        </ol>
+      </div>
+
+      <div class="project-card">
+        <h3 style="font-size:2rem; margin-bottom:2rem;">Common Behavioral Questions & Answers</h3>
+        <div style="font-size:1.2rem;">
+          <p style="font-weight:bold; color:#dc2626;">Q: Tell me about a challenging bug you fixed.</p>
+          <p style="background:#00000080; padding:1.5rem; border-radius:16px; margin:1rem 0;">
+            In HireSphere, users reported resumes not uploading. Situation: Production issue affecting sign-ups. Task: Diagnose and fix quickly. Action: Checked Multer config, found file size limit too low, implemented streaming to Cloudinary. Result: Upload success rate from 60% to 99%.</p>
+
+          <p style="font-weight:bold; color:#dc2626;">Q: How do you handle tight deadlines?</p>
+          <p style="background:#00000080; padding:1.5rem; border-radius:16px; margin:1rem 0;">
+            During internship sprint, delivered job tracking feature in 3 days. Prioritized MVP, used component library, wrote reusable hooks, paired with senior. Delivered on time with 100% test coverage.</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <h3 style="font-size:2rem; margin-bottom:2rem;">Questions to Ask Interviewer</h3>
+        <ul style="font-size:1.3rem; padding-left:2rem; line-height:2;">
+          <li>How does your team handle technical debt?</li>
+          <li>What are the biggest scaling challenges right now?</li>
+          <li>How do you approach code reviews and knowledge sharing?</li>
+          <li>What's the deployment process like? (CI/CD pipeline)</li>
+          <li>How are new technologies evaluated and adopted?</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Expand/collapse questions
+    function toggleAnswer(card) {
+      card.classList.toggle('expanded');
+    }
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      document.querySelectorAll('.question-card, .project-card, .snippet-card').forEach(el => {
+        const text = el.textContent.toLowerCase();
+        el.style.display = text.includes(query) ? 'block' : 'none';
+      });
+    });
+
+    // Copy code
+    function copyCode(btn, code) {
+      navigator.clipboard.writeText(code);
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    }
+  </script>
+</body>
+</html>
